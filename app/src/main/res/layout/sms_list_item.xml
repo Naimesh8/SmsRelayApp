@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/phone_number"
+        android:layout_marginTop="@dimen/tiny_spacing"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/message_body"
+        android:singleLine="true"
+        android:layout_below="@id/phone_number"
+        android:layout_marginTop="@dimen/small_spacing"/>
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_yes"
+        android:layout_below="@id/message_body"
+        android:layout_marginTop="@dimen/small_spacing"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="@dimen/normal_spacing"/>
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_no"
+        android:layout_below="@id/message_body"
+        android:layout_marginTop="@dimen/small_spacing"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/normal_spacing"/>
+
+</RelativeLayout>
