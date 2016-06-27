@@ -133,8 +133,6 @@ public class MessageProvider extends ContentProvider{
                 values = initialValues == null ? new ContentValues() : new ContentValues(initialValues);
 
                 rowId = db.insert(MessageContract.Message.TABLE_NAME, null, values);
-
-                Log.d(" ","appdebugtest mytest redturn rowID = "+rowId);
                 if (rowId > 0) {
                     rowsAdded++;
                 }
@@ -204,13 +202,6 @@ public class MessageProvider extends ContentProvider{
 
         // Contacts table name
         private static final String TABLE_MESSAGE = "message";
-
-        // Contacts Table Columns names
-        private static final String KEY_ID = "id";
-        private static final String KEY_NUMBER = "number";
-        private static final String KEY_MSG = "message";
-        private static final String KEY_TIMESTAMP = "timestamp";
-        private static final String KEY_SYNCED_STATUS = "is_synced";
 
         private static final String CREATE_MESSAGE_TABLE = "CREATE TABLE " + MessageContract.Message.TABLE_NAME + "("
                 + MessageContract.Message._ID + " INTEGER PRIMARY KEY AUTOINCREMENT ,"

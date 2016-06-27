@@ -93,25 +93,4 @@ public class SyncUtils {
                 syncBundle);
     }
 
-
-
-    /*public static void syncSMS(Context ctx,int smsID) {
-
-        Bundle syncBundle = new Bundle();
-
-        syncBundle.putBoolean(ContentResolver.SYNC_EXTRAS_IGNORE_BACKOFF,true);
-        syncBundle.putBoolean(ContentResolver.SYNC_EXTRAS_DO_NOT_RETRY, false);
-        syncBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
-        syncBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
-        syncBundle.putInt(KEY_SYNC_TYPE,SYNC_TYPE_SMS);
-        syncBundle.putInt(KEY_SYNC_SMS_ID,smsID);
-
-        AccountManager am = AccountManager.get(ctx);
-        Account[] acts = am.getAccountsByType(ACCOUNT_TYPE);
-
-        ContentResolver.requestSync(
-                acts[0],
-                MessageContract.CONTENT_AUTHORITY,
-                syncBundle);
-        }*/
 }

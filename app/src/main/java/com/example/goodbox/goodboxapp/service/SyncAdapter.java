@@ -67,16 +67,12 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 
             if(SERVER_URL != null && !TextUtils.isEmpty(SERVER_URL)) {
 
-                Log.d(" ","urltest URL != NULL #### server-url = "+SERVER_URL);
-
             } else {
 
                 SharedPreferences mPreference = mContext.getSharedPreferences(SyncUtils.PREF_NAME,mContext.MODE_PRIVATE);
                 String url = mPreference.getString(SyncUtils.KEY_SERVER_URL,"");
 
                 SERVER_URL = url;
-
-                Log.d(" ","urltest URL == NULL **** server-url = "+SERVER_URL);
             }
 
             switch(sync_type) {
@@ -96,48 +92,12 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
                     sendPostRequest(phnNo,msgBody,timestamp,syncResult);
 
                     break;
-
-               /* case SyncUtils.SYNC_TYPE_SMS:
-
-                    int smsID = extras.getInt(SyncUtils.KEY_SYNC_SMS_ID);
-                    syncSMS(smsID,syncResult);
-
-                    break;*/
             }
         } catch (Exception e) {
 
             e.printStackTrace();
         }
     }
-
-    /*private void syncSMS(int smsID,SyncResult syncResult) {
-
-        String[] projection = new String[]{
-                MessageContract.Message._ID,
-                MessageContract.Message.COLUMN_NAME_NUMBER,
-                MessageContract.Message.COLUMN_NAME_MESSAGE_BODY,
-                MessageContract.Message.COLUMN_NAME_TIMESTAMP,
-                MessageContract.Message.COLUMN_NAME_IS_SYNCED
-        };
-
-        String selection = MessageContract.Message._ID + " = ? ";
-        String[] selectionArg = new String[]{String.valueOf(smsID)};
-
-        Cursor cursor = mContentResolver.query(MessageContract.Message.CONTENT_URI, projection, selection, selectionArg, null);
-
-        if(cursor != null) {
-
-            cursor.moveToPosition(0);
-
-            String strPhnNo = cursor.getString(cursor.getColumnIndex(MessageContract.Message.COLUMN_NAME_NUMBER));
-            String strMsgBody = cursor.getString(cursor.getColumnIndex(MessageContract.Message.COLUMN_NAME_MESSAGE_BODY));
-            String strTimestamp = cursor.getString(cursor.getColumnIndex(MessageContract.Message.COLUMN_NAME_TIMESTAMP));
-
-            sendPostRequest(strPhnNo,strMsgBody,strTimestamp,syncResult);
-
-        }
-    }*/
-
 
     private void sendPostRequest(String phnNo,String msgBody,String timestamp,SyncResult syncResult) {
 

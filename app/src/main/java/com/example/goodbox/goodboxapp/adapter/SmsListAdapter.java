@@ -23,8 +23,6 @@ public class SmsListAdapter extends RecyclerView.Adapter<SmsListAdapter.SmsViewH
 
     public interface onSMSListClickListener {
 
-        //void onYesButtonClick(int position);
-
         void onDeleteButtonClick(int position);
     }
 
@@ -38,7 +36,6 @@ public class SmsListAdapter extends RecyclerView.Adapter<SmsListAdapter.SmsViewH
     }
 
     public void initData(List<Message> msgList) {
-        Log.d(" ","appdebugtest adapter initData");
         this.mMessageList = msgList;
         this.notifyDataSetChanged();
     }
@@ -54,36 +51,23 @@ public class SmsListAdapter extends RecyclerView.Adapter<SmsListAdapter.SmsViewH
     @Override
     public void onBindViewHolder(SmsViewHolder holder, int position) {
 
-        Log.d(" ","appdebugtest adapter onBindViewHolder = Position = "+position);
         Message message = mMessageList.get(position);
 
         if(message != null) {
-
-            Log.d(" ","appdebugtest adapter onBindViewHolder = Position = "+position+" message != null");
             holder.phoneTxv.setText(message.getPhoneNumber());
             holder.msgTxv.setText(message.getMsg());
-
         } else {
-
-            Log.d(" ","appdebugtest adapter onBindViewHolder = Position = "+" message == null");
             holder.phoneTxv.setText(" ");
             holder.msgTxv.setText(" ");
         }
-
     }
 
     @Override
     public int getItemCount() {
-        if(mMessageList != null) {
-
-            Log.d(" ","appdebugtest getItemCout = "+mMessageList.size());
+        if(mMessageList != null)
             return mMessageList.size();
-        }
-        else {
-            Log.d(" ","appdebugtest getItemCout = Zero");
+        else
             return 0;
-        }
-
     }
 
     public class SmsViewHolder extends RecyclerView.ViewHolder {
@@ -95,16 +79,6 @@ public class SmsListAdapter extends RecyclerView.Adapter<SmsListAdapter.SmsViewH
 
             phoneTxv = (TextView) view.findViewById(R.id.phone_number);
             msgTxv = (TextView) view.findViewById(R.id.message_body);
-
-           // yesBtn = (ImageButton) view.findViewById(R.id.btn_yes);
-
-            /*yesBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(listener != null)
-                        listener.onYesButtonClick(getLayoutPosition());
-                }
-            });*/
 
             noBtn = (ImageButton) view.findViewById(R.id.btn_no);
             noBtn.setOnClickListener(new View.OnClickListener() {

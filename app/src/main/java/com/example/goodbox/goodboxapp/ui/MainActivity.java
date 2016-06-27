@@ -124,17 +124,11 @@ public class MainActivity extends AppCompatActivity implements
 
                 messageArrayList.clear();
 
-                Log.d(" ","appdebugtest onLoadFinished START");
-
                 if (data != null) {
-
-                    Log.d(" ","appdebugtest onLoadFinished data != null");
-
                     Cursor cursor = (Cursor) data;
 
                     if (cursor.getCount() > 0) {
 
-                        Log.d(" ","appdebugtest onLoadFinished Count > 0 = "+cursor.getCount());
                         for(int index = 0 ; index < cursor.getCount() ; index ++) {
 
                             cursor.moveToPosition(index);
@@ -144,11 +138,6 @@ public class MainActivity extends AppCompatActivity implements
                             String strMsgBody = cursor.getString(cursor.getColumnIndex(MessageContract.Message.COLUMN_NAME_MESSAGE_BODY));
                             String strTimestamp = cursor.getString(cursor.getColumnIndex(MessageContract.Message.COLUMN_NAME_TIMESTAMP));
                             int isSyncF = cursor.getInt(cursor.getColumnIndex(MessageContract.Message.COLUMN_NAME_IS_SYNCED));
-
-                            Log.d(" ","appdebugtest onLoadFinished id = "+id
-                                            +" PhnNo = "+strPhnNo
-                                            +" MsgBody = "+strMsgBody
-                                            +" Timestamp = "+strTimestamp);
 
                             Message message = new Message(strPhnNo,strMsgBody,strTimestamp,isSyncF,id);
                             messageArrayList.add(message);
@@ -169,22 +158,8 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
-    /*@Override
-    public void onYesButtonClick(int position) {
-
-        //start sync with server
-        if(messageArrayList != null) {
-            Message msg = messageArrayList.get(position);
-            if (msg != null) {
-                SyncUtils.syncSMS(getApplicationContext(),msg.getID());
-            }
-        }
-    }*/
-
     @Override
     public void onDeleteButtonClick(int position) {
-
-        Log.d(" ","appdebugtest onDeleteButtonClick deleted position = "+position);
 
         if(messageArrayList != null) {
 
@@ -197,14 +172,11 @@ public class MainActivity extends AppCompatActivity implements
                 String selection = MessageContract.Message._ID + " = ? ";
                 String[] selectionArg = new String[]{strID};
 
-                Log.d(" ","appdebugtest onDeleteButtonClick deleted msgID = "+strID+" , id = "+id+" , from = "+msg.getPhoneNumber());
-
                 int result = getContentResolver().delete(
                                 MessageContract.Message.CONTENT_URI,
                                 selection,
                                 selectionArg);
 
-                Log.d(" ","appdebugtest onDeleteButtonClick deleted result = "+result);
                 if(result > 0) {
                     messageArrayList.remove(position);
 

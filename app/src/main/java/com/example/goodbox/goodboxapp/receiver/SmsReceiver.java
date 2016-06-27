@@ -63,11 +63,6 @@ public class SmsReceiver extends BroadcastReceiver {
                     Long tsLong = System.currentTimeMillis()/1000;
                     String strTimestamp = tsLong.toString();
 
-                    Log.d(" ","appdebugtest RECEIVER address = "+msgs[i].getOriginatingAddress()
-                                            +" Msg-body = "+msgs[i].getMessageBody().toString()
-                                            +" Timestamp = "+strTimestamp
-                                            );
-
                     ContentValues value = new ContentValues();
                     value.put(MessageContract.Message.COLUMN_NAME_NUMBER,msgs[i].getOriginatingAddress());
                     value.put(MessageContract.Message.COLUMN_NAME_MESSAGE_BODY,msgs[i].getMessageBody().toString());
