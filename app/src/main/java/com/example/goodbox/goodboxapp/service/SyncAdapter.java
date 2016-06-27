@@ -35,7 +35,7 @@ import java.net.URL;
 class SyncAdapter extends AbstractThreadedSyncAdapter {
     public static final String TAG = "SyncAdapter";
 
-    private String SERVER_URL;
+    private String SERVER_URL=null;
 
     private static final int NET_CONNECT_TIMEOUT_MILLIS = 15000;  // 15 seconds
 
@@ -100,6 +100,9 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
     }
 
     private void sendPostRequest(String phnNo,String msgBody,String timestamp,SyncResult syncResult) {
+
+        if(SERVER_URL == null)
+            return;
 
         HttpURLConnection conn = null;
 
