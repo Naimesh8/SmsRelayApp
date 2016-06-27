@@ -7,10 +7,13 @@ import android.content.ContentProviderClient;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.SyncResult;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 
 import com.example.goodbox.goodboxapp.provider.MessageContract;
 
@@ -32,39 +35,26 @@ import java.net.URL;
 class SyncAdapter extends AbstractThreadedSyncAdapter {
     public static final String TAG = "SyncAdapter";
 
-    //TODO = get value from user
-    private static final String FEED_URL = "http://android-developers.blogspot.com/atom.xml";
+    private String SERVER_URL;
 
     private static final int NET_CONNECT_TIMEOUT_MILLIS = 15000;  // 15 seconds
 
     private static final int NET_READ_TIMEOUT_MILLIS = 10000;  // 10 seconds
 
     private final ContentResolver mContentResolver;
-
-    //TODO = think about this already defined in contract class
-    private static final String[] PROJECTION = new String[] {
-            MessageContract.Message._ID,
-            MessageContract.Message.COLUMN_NAME_NUMBER,
-            MessageContract.Message.COLUMN_NAME_MESSAGE_BODY,
-            MessageContract.Message.COLUMN_NAME_TIMESTAMP,
-            MessageContract.Message.COLUMN_NAME_IS_SYNCED};
-
-    // Constants representing column positions from PROJECTION.
-    public static final int COLUMN_ID = 0;
-    public static final int COLUMN_NUMBER = 1;
-    public static final int COLUMN_MESSAGE_BODY = 2;
-    public static final int COLUMN_TIMESTAMP = 3;
-    public static final int COLUMN_IS_SYNCED = 4;
+    private Context mContext;
 
     public SyncAdapter(Context context, boolean autoInitialize) {
         super(context, autoInitialize);
         mContentResolver = context.getContentResolver();
+        mContext = context;
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public SyncAdapter(Context context, boolean autoInitialize, boolean allowParallelSyncs) {
         super(context, autoInitialize, allowParallelSyncs);
         mContentResolver = context.getContentResolver();
+        mContext = context;
     }
 
     @Override
@@ -75,6 +65,20 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 
             int sync_type = extras.getInt(SyncUtils.KEY_SYNC_TYPE);
 
+            if(SERVER_URL != null && !TextUtils.isEmpty(SERVER_URL)) {
+
+                Log.d(" ","urltest URL != NULL #### server-url = "+SERVER_URL);
+
+            } else {
+
+                SharedPreferences mPreference = mContext.getSharedPreferences(SyncUtils.PREF_NAME,mContext.MODE_PRIVATE);
+                String url = mPreference.getString(SyncUtils.KEY_SERVER_URL,"");
+
+                SERVER_URL = url;
+
+                Log.d(" ","urltest URL == NULL **** server-url = "+SERVER_URL);
+            }
+
             switch(sync_type) {
 
                 case SyncUtils.SYNC_TYPE_REFRESH:
@@ -83,12 +87,22 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 
                     break;
 
-                case SyncUtils.SYNC_TYPE_SMS:
+                case SyncUtils.SYNC_TYPE_RECEIVED_SMS:
+
+                    String phnNo = extras.getString(SyncUtils.KEY_SYNC_SMS_PHONE_NO);
+                    String msgBody = extras.getString(SyncUtils.KEY_SYNC_SMS_MSG);
+                    String timestamp = extras.getString(SyncUtils.KEY_SYNC_SMS_TIMESTAMP);
+
+                    sendPostRequest(phnNo,msgBody,timestamp,syncResult);
+
+                    break;
+
+               /* case SyncUtils.SYNC_TYPE_SMS:
 
                     int smsID = extras.getInt(SyncUtils.KEY_SYNC_SMS_ID);
                     syncSMS(smsID,syncResult);
 
-                    break;
+                    break;*/
             }
         } catch (Exception e) {
 
@@ -96,7 +110,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         }
     }
 
-    private void syncSMS(int smsID,SyncResult syncResult) {
+    /*private void syncSMS(int smsID,SyncResult syncResult) {
 
         String[] projection = new String[]{
                 MessageContract.Message._ID,
@@ -119,23 +133,19 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
             String strMsgBody = cursor.getString(cursor.getColumnIndex(MessageContract.Message.COLUMN_NAME_MESSAGE_BODY));
             String strTimestamp = cursor.getString(cursor.getColumnIndex(MessageContract.Message.COLUMN_NAME_TIMESTAMP));
 
-            sendPostRequest(String.valueOf(smsID),strPhnNo,strMsgBody,strTimestamp,syncResult);
+            sendPostRequest(strPhnNo,strMsgBody,strTimestamp,syncResult);
 
         }
-    }
+    }*/
 
 
-    private void sendPostRequest(String id,String phnNo,String msgBody,String timestamp,SyncResult syncResult) {
+    private void sendPostRequest(String phnNo,String msgBody,String timestamp,SyncResult syncResult) {
 
         HttpURLConnection conn = null;
 
         try {
 
-            //TODO = make logic to pass URL here
-
-            URL url = new URL("https://www.googleapis.com/youtube/v3/playlistItems?part=snippet"
-                    + "&key=AIzaSyAhONZJpMCBqCfQjFUj21cR2klf6JWbVSo"
-                    + "&access_token=");
+            URL url = new URL(SERVER_URL);
 
             conn = (HttpURLConnection) url.openConnection();
             conn.setDoOutput(true);
@@ -174,16 +184,6 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 
                 inputStream.close();
 
-                //Update DB i.e. SMS synced Flag
-
-                //TODO = think on this update sync flag or delete sms from DB ??
-                String selection = MessageContract.Message._ID + " = ? ";
-                String[] selectionArg = new String[]{String.valueOf(id)};
-
-                ContentValues value = new ContentValues();
-                value.put(MessageContract.Message.COLUMN_NAME_IS_SYNCED,1);
-
-                mContentResolver.update(MessageContract.Message.CONTENT_URI,value,selection,selectionArg);
             }
 
         } catch (JSONException e) {

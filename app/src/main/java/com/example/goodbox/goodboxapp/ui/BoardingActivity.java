@@ -45,15 +45,14 @@ public class BoardingActivity extends AppCompatActivity implements View.OnClickL
 
                 String url = urlEditTxv.getText().toString();
 
-                Log.d(" ","url boarding = "+url);
-
                 if(url != null && !TextUtils.isEmpty(url)) {
 
-                    mPreference = getPreferences(MODE_PRIVATE);
+                    mPreference = getSharedPreferences(SyncUtils.PREF_NAME,MODE_PRIVATE);
                     SharedPreferences.Editor editor = mPreference.edit();
                     editor.putString(SyncUtils.KEY_SERVER_URL,url);
                     editor.commit();
 
+                    SyncUtils.CreateSyncAccount(getApplicationContext());
                     Intent mainIntent = new Intent(context,MainActivity.class);
                     startActivity(mainIntent);
                     finish();

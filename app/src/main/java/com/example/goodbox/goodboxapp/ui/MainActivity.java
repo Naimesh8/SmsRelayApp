@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
@@ -32,8 +33,6 @@ public class MainActivity extends AppCompatActivity implements
     //UI Variables
     private RecyclerView mSmsListView;
     private LinearLayoutManager mRecyclerLinearLayoutManager;
-    private TextView mPhoneNoTxv,mMsgBodyTxv;
-    private ImageButton mYesBtn,mNoBtn;
 
     //Data variables
 
@@ -57,12 +56,6 @@ public class MainActivity extends AppCompatActivity implements
         mSmsListView = (RecyclerView) findViewById(R.id.sms_list);
         mRecyclerLinearLayoutManager = new LinearLayoutManager(this);
         mSmsListView.setLayoutManager(mRecyclerLinearLayoutManager);
-
-        mPhoneNoTxv = (TextView) findViewById(R.id.phone_number);
-        mMsgBodyTxv = (TextView) findViewById(R.id.message_body);
-
-        mYesBtn = (ImageButton) findViewById(R.id.btn_yes);
-        mNoBtn = (ImageButton) findViewById(R.id.btn_no);
 
         if (smsListAdapter == null) {
             smsListAdapter = new SmsListAdapter(this);
@@ -105,8 +98,8 @@ public class MainActivity extends AppCompatActivity implements
                         MessageContract.Message._ID,
                         MessageContract.Message.COLUMN_NAME_NUMBER,
                         MessageContract.Message.COLUMN_NAME_MESSAGE_BODY,
-                        MessageContract.Message.COLUMN_NAME_TIMESTAMP,
-                        MessageContract.Message.COLUMN_NAME_IS_SYNCED
+                        MessageContract.Message.COLUMN_NAME_IS_SYNCED,
+                        MessageContract.Message.COLUMN_NAME_TIMESTAMP
                 };
 
 
@@ -125,19 +118,23 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onLoadFinished(Loader loader, Object data) {
 
-        //TODO = Update Adapter & populate UI
         switch (loader.getId()) {
 
             case LOADER_ID_MESSAGES:
 
                 messageArrayList.clear();
 
+                Log.d(" ","appdebugtest onLoadFinished START");
+
                 if (data != null) {
+
+                    Log.d(" ","appdebugtest onLoadFinished data != null");
 
                     Cursor cursor = (Cursor) data;
 
                     if (cursor.getCount() > 0) {
 
+                        Log.d(" ","appdebugtest onLoadFinished Count > 0 = "+cursor.getCount());
                         for(int index = 0 ; index < cursor.getCount() ; index ++) {
 
                             cursor.moveToPosition(index);
@@ -148,7 +145,12 @@ public class MainActivity extends AppCompatActivity implements
                             String strTimestamp = cursor.getString(cursor.getColumnIndex(MessageContract.Message.COLUMN_NAME_TIMESTAMP));
                             int isSyncF = cursor.getInt(cursor.getColumnIndex(MessageContract.Message.COLUMN_NAME_IS_SYNCED));
 
-                            Message message = new Message(strPhnNo,strMsgBody,strTimestamp,isSyncF);
+                            Log.d(" ","appdebugtest onLoadFinished id = "+id
+                                            +" PhnNo = "+strPhnNo
+                                            +" MsgBody = "+strMsgBody
+                                            +" Timestamp = "+strTimestamp);
+
+                            Message message = new Message(strPhnNo,strMsgBody,strTimestamp,isSyncF,id);
                             messageArrayList.add(message);
 
                         }
@@ -167,24 +169,22 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
-    @Override
+    /*@Override
     public void onYesButtonClick(int position) {
 
         //start sync with server
-
-        //TODO = option 1) do need to delete from DB & start sync OR
-               // option 2) sync start & on success response delete from DB
-
         if(messageArrayList != null) {
             Message msg = messageArrayList.get(position);
             if (msg != null) {
-                SyncUtils.syncSMS(msg.getID());
+                SyncUtils.syncSMS(getApplicationContext(),msg.getID());
             }
         }
-    }
+    }*/
 
     @Override
-    public void onNoButtonClick(int position) {
+    public void onDeleteButtonClick(int position) {
+
+        Log.d(" ","appdebugtest onDeleteButtonClick deleted position = "+position);
 
         if(messageArrayList != null) {
 
@@ -197,11 +197,14 @@ public class MainActivity extends AppCompatActivity implements
                 String selection = MessageContract.Message._ID + " = ? ";
                 String[] selectionArg = new String[]{strID};
 
+                Log.d(" ","appdebugtest onDeleteButtonClick deleted msgID = "+strID+" , id = "+id+" , from = "+msg.getPhoneNumber());
+
                 int result = getContentResolver().delete(
                                 MessageContract.Message.CONTENT_URI,
                                 selection,
                                 selectionArg);
 
+                Log.d(" ","appdebugtest onDeleteButtonClick deleted result = "+result);
                 if(result > 0) {
                     messageArrayList.remove(position);
 
@@ -211,4 +214,5 @@ public class MainActivity extends AppCompatActivity implements
             }
         }
     }
+
 }

@@ -21,12 +21,20 @@ public class SyncUtils {
     private static final String PREF_SETUP_COMPLETE = "setup_complete";
 
     public static final String KEY_SERVER_URL = "key_server_url";
+    public static final String PREF_NAME = "AppPrefData";
     public static final String KEY_SYNC_TYPE = "key_sync_type";
     public static final String KEY_SYNC_SMS_ID = "key_sync_sms_id";
+    public static final String KEY_SYNC_SMS_PHONE_NO = "key_sync_sms_phone_no";
+    public static final String KEY_SYNC_SMS_MSG = "key_sync_sms_body";
+    public static final String KEY_SYNC_SMS_TIMESTAMP = "key_sync_sms_timestamp";
+
+
     public static final int SYNC_TYPE_REFRESH = 100;
-    public static final int SYNC_TYPE_SMS = 101;
+    //public static final int SYNC_TYPE_SMS = 101;
+    public static final int SYNC_TYPE_RECEIVED_SMS = 102;
 
     public static final String ACCOUNT_TYPE = "com.example.android.messagesyncadapter.account";
+    //private Context mContext;
 
     @TargetApi(Build.VERSION_CODES.FROYO)
     public static void CreateSyncAccount(Context context) {
@@ -63,7 +71,31 @@ public class SyncUtils {
                 syncBundle);
     }
 
-    public static void syncSMS(int smsID) {
+    public static void autoSyncSMS(Context ctx,String phnNo,String msgBody,String timestamp) {
+
+        Bundle syncBundle = new Bundle();
+
+        syncBundle.putBoolean(ContentResolver.SYNC_EXTRAS_IGNORE_BACKOFF,true);
+        syncBundle.putBoolean(ContentResolver.SYNC_EXTRAS_DO_NOT_RETRY, false);
+        syncBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
+        syncBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+        syncBundle.putInt(KEY_SYNC_TYPE,SYNC_TYPE_RECEIVED_SMS);
+        syncBundle.putString(KEY_SYNC_SMS_PHONE_NO,phnNo);
+        syncBundle.putString(KEY_SYNC_SMS_MSG,msgBody);
+        syncBundle.putString(KEY_SYNC_SMS_TIMESTAMP,timestamp);
+
+        AccountManager am = AccountManager.get(ctx);
+        Account[] acts = am.getAccountsByType(ACCOUNT_TYPE);
+
+        ContentResolver.requestSync(
+                acts[0],
+                MessageContract.CONTENT_AUTHORITY,
+                syncBundle);
+    }
+
+
+
+    /*public static void syncSMS(Context ctx,int smsID) {
 
         Bundle syncBundle = new Bundle();
 
@@ -74,9 +106,12 @@ public class SyncUtils {
         syncBundle.putInt(KEY_SYNC_TYPE,SYNC_TYPE_SMS);
         syncBundle.putInt(KEY_SYNC_SMS_ID,smsID);
 
+        AccountManager am = AccountManager.get(ctx);
+        Account[] acts = am.getAccountsByType(ACCOUNT_TYPE);
+
         ContentResolver.requestSync(
-                AccountService.GetAccount(ACCOUNT_TYPE),
+                acts[0],
                 MessageContract.CONTENT_AUTHORITY,
                 syncBundle);
-        }
+        }*/
 }

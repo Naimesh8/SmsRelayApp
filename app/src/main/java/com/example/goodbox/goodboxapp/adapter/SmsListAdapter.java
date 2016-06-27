@@ -1,6 +1,7 @@
 package com.example.goodbox.goodboxapp.adapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,7 +10,6 @@ import android.widget.TextView;
 
 import com.example.goodbox.goodboxapp.R;
 import com.example.goodbox.goodboxapp.model.Message;
-import com.example.goodbox.goodboxapp.provider.MessageContract;
 
 import java.util.List;
 
@@ -23,9 +23,9 @@ public class SmsListAdapter extends RecyclerView.Adapter<SmsListAdapter.SmsViewH
 
     public interface onSMSListClickListener {
 
-        void onYesButtonClick(int position);
+        //void onYesButtonClick(int position);
 
-        void onNoButtonClick(int position);
+        void onDeleteButtonClick(int position);
     }
 
     public SmsListAdapter(onSMSListClickListener listener){
@@ -38,6 +38,7 @@ public class SmsListAdapter extends RecyclerView.Adapter<SmsListAdapter.SmsViewH
     }
 
     public void initData(List<Message> msgList) {
+        Log.d(" ","appdebugtest adapter initData");
         this.mMessageList = msgList;
         this.notifyDataSetChanged();
     }
@@ -53,15 +54,18 @@ public class SmsListAdapter extends RecyclerView.Adapter<SmsListAdapter.SmsViewH
     @Override
     public void onBindViewHolder(SmsViewHolder holder, int position) {
 
+        Log.d(" ","appdebugtest adapter onBindViewHolder = Position = "+position);
         Message message = mMessageList.get(position);
 
         if(message != null) {
 
+            Log.d(" ","appdebugtest adapter onBindViewHolder = Position = "+position+" message != null");
             holder.phoneTxv.setText(message.getPhoneNumber());
-            holder.msgTxv.setText(message.getTimestamp());
+            holder.msgTxv.setText(message.getMsg());
 
         } else {
 
+            Log.d(" ","appdebugtest adapter onBindViewHolder = Position = "+" message == null");
             holder.phoneTxv.setText(" ");
             holder.msgTxv.setText(" ");
         }
@@ -70,10 +74,16 @@ public class SmsListAdapter extends RecyclerView.Adapter<SmsListAdapter.SmsViewH
 
     @Override
     public int getItemCount() {
-        if(mMessageList != null)
+        if(mMessageList != null) {
+
+            Log.d(" ","appdebugtest getItemCout = "+mMessageList.size());
             return mMessageList.size();
-        else
+        }
+        else {
+            Log.d(" ","appdebugtest getItemCout = Zero");
             return 0;
+        }
+
     }
 
     public class SmsViewHolder extends RecyclerView.ViewHolder {
@@ -86,22 +96,22 @@ public class SmsListAdapter extends RecyclerView.Adapter<SmsListAdapter.SmsViewH
             phoneTxv = (TextView) view.findViewById(R.id.phone_number);
             msgTxv = (TextView) view.findViewById(R.id.message_body);
 
-            yesBtn = (ImageButton) view.findViewById(R.id.btn_yes);
+           // yesBtn = (ImageButton) view.findViewById(R.id.btn_yes);
 
-            yesBtn.setOnClickListener(new View.OnClickListener() {
+            /*yesBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if(listener != null)
                         listener.onYesButtonClick(getLayoutPosition());
                 }
-            });
+            });*/
 
             noBtn = (ImageButton) view.findViewById(R.id.btn_no);
             noBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if(listener != null)
-                        listener.onNoButtonClick(getLayoutPosition());
+                        listener.onDeleteButtonClick(getLayoutPosition());
                 }
             });
 

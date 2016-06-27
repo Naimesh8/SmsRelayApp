@@ -11,6 +11,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 /**
  * Created by PRAVEEN-PC on 26-06-2016.
@@ -108,7 +109,6 @@ public class MessageProvider extends ContentProvider{
         final SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
         int count;
-        //TODO = content resolver notify still pending
         switch (match) {
             case MESSAGES:
                 count = performBulkInsert(db, values);
@@ -133,6 +133,8 @@ public class MessageProvider extends ContentProvider{
                 values = initialValues == null ? new ContentValues() : new ContentValues(initialValues);
 
                 rowId = db.insert(MessageContract.Message.TABLE_NAME, null, values);
+
+                Log.d(" ","appdebugtest mytest redturn rowID = "+rowId);
                 if (rowId > 0) {
                     rowsAdded++;
                 }
@@ -210,9 +212,12 @@ public class MessageProvider extends ContentProvider{
         private static final String KEY_TIMESTAMP = "timestamp";
         private static final String KEY_SYNCED_STATUS = "is_synced";
 
-        private static final String CREATE_MESSAGE_TABLE = "CREATE TABLE " + TABLE_MESSAGE + "("
-                + KEY_ID + " INTEGER AUTOINCREMENT PRIMARY KEY," + KEY_NUMBER + " TEXT," + KEY_MSG + " TEXT,"
-                + KEY_TIMESTAMP + " TEXT," + KEY_SYNCED_STATUS + "INTEGER" + ")";
+        private static final String CREATE_MESSAGE_TABLE = "CREATE TABLE " + MessageContract.Message.TABLE_NAME + "("
+                + MessageContract.Message._ID + " INTEGER PRIMARY KEY AUTOINCREMENT ,"
+                + MessageContract.Message.COLUMN_NAME_NUMBER + " TEXT,"
+                + MessageContract.Message.COLUMN_NAME_MESSAGE_BODY + " TEXT,"
+                + MessageContract.Message.COLUMN_NAME_TIMESTAMP + " TEXT,"
+                + MessageContract.Message.COLUMN_NAME_IS_SYNCED + " INTEGER" + ")";
 
         public MessageDatabase(Context context) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);

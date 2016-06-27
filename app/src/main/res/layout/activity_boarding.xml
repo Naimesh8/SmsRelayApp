@@ -21,7 +21,7 @@
 
     <EditText
         android:layout_width="match_parent"
-        android:layout_height="25dp"
+        android:layout_height="wrap_content"
         android:id="@+id/editText"
         android:layout_below="@+id/textView"
         android:textSize="@dimen/address_text_size"

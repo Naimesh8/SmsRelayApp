@@ -12,13 +12,15 @@ public class Message {
     private int _isSynced;
     private int _id;
 
+
     // constructor
-    public Message(String number, String msg, String timestamp, int isSynced) {
+    public Message(String number, String msg, String timestamp, int isSynced, int id) {
 
         this._number = number;
         this._msg = msg;
         this._timestamp = timestamp;
         this._isSynced = isSynced;
+        this._id = id;
     }
 
     //getting msg

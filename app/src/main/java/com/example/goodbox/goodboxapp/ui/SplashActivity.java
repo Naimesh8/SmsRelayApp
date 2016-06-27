@@ -22,10 +22,9 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        mPreference = getPreferences(MODE_PRIVATE);
+        mPreference = getSharedPreferences(SyncUtils.PREF_NAME,MODE_PRIVATE);
         String url = mPreference.getString(SyncUtils.KEY_SERVER_URL,"");
 
-        Log.d(" ","url splash = "+url);
         if(url != null && !TextUtils.isEmpty(url)) {
 
             startIntent = new Intent(SplashActivity.this, MainActivity.class);
@@ -45,4 +44,6 @@ public class SplashActivity extends AppCompatActivity {
             }
         }, SPLASH_TIME_OUT);
     }
+
+
 }
